@@ -20,7 +20,18 @@ venv/
 
 # OS
 .DS_Store
+Thumbs.db
 
 # Migrations
 */migrations/__pycache__/
 */migrations/*.pyc
+
+# Django Compressor cache
+static/CACHE/
+
+# Node.js 
+node_modules/
+
+# Media uploads
+media/
+

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+db.sqlite3
+*.sqlite3
+.env
+.env.*
+
+# Virtual Environments
+venv/
+.venv/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+
+# Migrations
+*/migrations/__pycache__/
+*/migrations/*.pyc

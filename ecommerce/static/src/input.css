@@ -1,1 +1,5 @@
 @import "tailwindcss";
+/* default theme variables from Flowbite */
+@import "flowbite/src/themes/default";
+
+

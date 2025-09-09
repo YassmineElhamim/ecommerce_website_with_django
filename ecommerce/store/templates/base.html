@@ -3,16 +3,141 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Test</title>
-        {% compress css %}
-        <link rel="stylesheet" href="{% static 'src/output.css' %}">
-        {% endcompress %}
-    </head>
-    <body class="bg-pink-50">
-        <div class="container mx-auto mt-4">
-            {% block content %}
-            {% endblock content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
+
+</head>
+
+<body class="bg-green-50">
+
+  <nav class="bg-stone-100/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-16">
+
+        <!-- Left nav -->
+        <div class="hidden md:flex space-x-8 text-stone-700 font-medium tracking-wide">
+          <a href="{% url 'home' %}" class="hover:text-rose-400 transition">About Us</a>
+          <a href="{% url 'home' %}" class="hover:text-rose-400 transition">Categories</a>
+          <a href="{% url 'home' %}" class="hover:text-rose-400 transition">Contact</a>
         </div>
-    </body>
+
+        <!-- Logo centered -->
+        <a href="{% url 'home' %}" class="text-2xl font-serif font-bold text-rose-500">
+          Bayt Basma 
+        </a>
+
+        <!-- Right nav -->
+        <div class="flex items-center space-x-6">
+          <!-- Cart -->
+          <a href="{% url 'home' %}" class="relative text-stone-600 hover:text-rose-400">
+            <!-- Cute bag icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
+            </svg>
+            {% if cart.item_count %}
+            <span class="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">
+              {{ cart.item_count }}
+            </span>
+            {% endif %}
+          </a>
+
+          <!-- Auth buttons -->
+          {% if user.is_authenticated %}
+            <a href="{% url 'home' %}" 
+               class="text-stone-600 hover:text-rose-400 text-sm">Logout</a>
+          {% else %}
+            <a href="{% url 'home' %}" 
+               class="px-3 py-1 text-sm rounded-full border border-stone-300 text-stone-700 hover:border-rose-400 hover:text-rose-400 transition">
+              Login
+            </a>
+            <a href="{% url 'home' %}" 
+               class="px-3 py-1 text-sm rounded-full bg-rose-400 text-white hover:bg-rose-500 transition">
+              Sign Up
+            </a>
+          {% endif %}
+
+          <!-- Mobile Menu Button -->
+          <button id="menu-toggle" class="md:hidden text-stone-600 hover:text-rose-400 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-stone-50 border-t shadow-md">
+      <div class="flex flex-col space-y-4 px-6 py-4 text-stone-700 font-medium tracking-wide">
+        <a href="{% url 'home' %}" class="hover:text-rose-400">About Us</a>
+        <a href="{% url 'home' %}" class="hover:text-rose-400">Categories</a>
+        <a href="{% url 'home' %}" class="hover:text-rose-400">Contact</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'home' %}" class="hover:text-rose-400">Logout</a>
+        {% else %}
+          <a href="{% url 'home' %}" class="hover:text-rose-400">Login</a>
+          <a href="{% url 'home' %}" class="hover:text-rose-400">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+
+ <!-- Hero Section -->
+<section class="bg-stone-100">
+  <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 items-center gap-12">
+
+    <!-- Text Content -->
+    <div class="space-y-6">
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-tight">
+        Experience the Essence of Morocco
+      </h1>
+      <p class="text-stone-600 max-w-md">
+        Natural masks, soulful bakhour, and timeless Arabic perfumes.
+      </p>
+      <div>
+        <a href="{% url 'home' %}"
+           class="px-8 py-3 rounded-full bg-rose-400 text-white font-medium hover:bg-rose-500 transition">
+          Shop Now    
+        </a>
+      </div>
+    </div>
+
+    <!-- Image -->
+    <div class="flex justify-center">
+      <img src="{% static 'assets/hero.jpg' %}" alt="Moroccan masks, bakhour burners and perfumes"
+           class="rounded-2xl shadow-xl w-96 md:w-full object-cover">
+    </div>
+  </div>
+</section>
+
+
+
+
+    <div class="container mx-auto mt-4">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+    document.getElementById('menu-toggle').addEventListener('click', function () {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+
 </html>

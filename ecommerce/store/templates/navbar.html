@@ -1,0 +1,92 @@
+<nav class="bg-stone-100/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex justify-between items-center h-16">
+
+      <!-- Left nav (hidden on mobile) -->
+      <div class="hidden md:flex space-x-4 text-stone-700 font-medium tracking-wide">
+        <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Home</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">About Us</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Categories</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Contact</a>
+      </div>
+
+      <!-- Logo centered -->
+      <a href="{% url 'home' %}" class="text-2xl font-serif font-bold text-yellow-600">
+        Basma Bayt Al Bakhour
+      </a>
+
+      <!-- Right nav (hidden on mobile, shown on md+) -->
+      <div class="hidden md:flex items-center space-x-6">
+        <!-- Cart -->
+        <a href="{% url 'home' %}" class="relative text-stone-600 hover:text-yellow-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
+          </svg>
+          {% if cart.item_count %}
+          <span class="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">
+            {{ cart.item_count }}
+          </span>
+          {% endif %}
+        </a>
+
+        <!-- Auth buttons -->
+        {% if user.is_authenticated %}
+          <a href="{% url 'home' %}" class="text-stone-600 hover:text-yellow-600 text-sm">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}"
+             class="px-3 py-1 text-sm rounded-full border border-stone-300 text-stone-700 hover:border-yellow-600 hover:text-yellow-700 transition">
+            Login
+          </a>
+          <a href="{% url 'home' %}"
+             class="px-3 py-1 text-sm rounded-full bg-yellow-600 text-white hover:bg-yellow-700 transition">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="menu-toggle" class="md:hidden text-stone-600 hover:text-yellow-600 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-stone-50 border-t shadow-md">
+    <div class="flex flex-col space-y-4 px-6 py-4 text-stone-700 font-medium tracking-wide">
+      <a href="{% url 'home' %}" class="hover:text-yellow-600">Home</a>
+      <a href="{% url 'home' %}" class="hover:text-yellow-600">About Us</a>
+      <a href="{% url 'home' %}" class="hover:text-yellow-600">Categories</a>
+      <a href="{% url 'home' %}" class="hover:text-yellow-600">Contact</a>
+
+      <!-- Cart (inside mobile menu) -->
+      <a href="{% url 'home' %}" class="relative text-stone-600 hover:text-yellow-600 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
+        </svg>
+        Cart
+        {% if cart.item_count %}
+        <span class="ml-2 bg-rose-500 text-white text-xs rounded-full px-2 py-0.5">
+          {{ cart.item_count }}
+        </span>
+        {% endif %}
+      </a>
+
+      <!-- Auth buttons (inside mobile menu) -->
+      {% if user.is_authenticated %}
+        <a href="{% url 'home' %}" class="hover:text-yellow-600">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="hover:text-yellow-600">Login</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-600">Sign Up</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

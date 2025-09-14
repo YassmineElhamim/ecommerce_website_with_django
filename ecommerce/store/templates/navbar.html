@@ -1,4 +1,4 @@
-<nav class="bg-stone-100/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+<nav class="bg-yellow-50 backdrop-blur-md shadow-sm sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex justify-between items-center h-16">
 
@@ -33,7 +33,7 @@
 
         <!-- Auth buttons -->
         {% if user.is_authenticated %}
-          <a href="{% url 'home' %}" class="text-stone-600 hover:text-yellow-600 text-sm">Logout</a>
+          <a href="{% url 'logout' %}" class="text-stone-600 hover:text-yellow-600 text-sm">Logout</a>
         {% else %}
           <a href="{% url 'login' %}"
              class="px-3 py-1 text-sm rounded-full border border-stone-300 text-stone-700 hover:border-yellow-600 hover:text-yellow-700 transition">
@@ -84,7 +84,7 @@
       {% if user.is_authenticated %}
         <a href="{% url 'home' %}" class="hover:text-yellow-600">Logout</a>
       {% else %}
-        <a href="{% url 'login' %}" class="hover:text-yellow-600">Login</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-600">Login</a>
         <a href="{% url 'home' %}" class="hover:text-yellow-600">Sign Up</a>
       {% endif %}
     </div>

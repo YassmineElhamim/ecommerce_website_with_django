@@ -15,6 +15,10 @@ def home(request):
 def products(request):
     return render(request, 'products.html', {})
 
+def product_details(request, pk):
+    product = Product.objects.get(id=pk)
+    return render(request, 'product_details.html', {'product':product})
+
 
 def login_user(request):
     if request.method == 'POST':

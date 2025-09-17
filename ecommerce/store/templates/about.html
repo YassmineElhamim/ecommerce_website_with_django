@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <section class="relative bg-pink-100">
+    <!-- Background Image -->
+    <div class="absolute inset-0">
+        <img src="{% static 'assets/hero-morocco.png' %}" 
+            alt="Moroccan masks, bakhour burners and perfumes"
+            class="w-full h-full object-cover">
+        <!-- Pink overlay -->
+        <div class="absolute inset-0 bg-pink-200/70 mix-blend-multiply"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative max-w-7xl mx-auto px-6 py-32 flex flex-col items-center text-center text-stone-800">
+        <h1 class="text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-lg">
+            Basma Bayt Al Bakhour
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg md:text-xl text-white">
+            About Us
+        </p>
+    </div>
+    </section>
+
+
+    <section class="bg-white">
+        <div class="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
+            <div class="font-light text-gray-500 sm:text-lg ">
+                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900">Our Story</h2>
+                <p class="mb-4 text-stone-700" >
+                    Rooted in the ancient beauty secrets of Morocco, our journey began with a passion for sharing 
+                    the natural gifts of our land with the world. From the soothing power of ghassoul clay masks, 
+                    to the warm embrace of bakhour smoke, to the elegance of pure oud perfumes — each product 
+                    embodies a legacy passed down through generations.
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus nam omnis unde excepturi, dignissimos doloremque
+                    voluptas minima quae saepe tenetur quidem. Unde error inventore voluptatem est animi nostrum, ipsam veniam.
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-8">
+                <img class="w-full rounded-lg" src="{% static 'assets/about1.jpeg' %}" alt="office content 1">
+                <img class="mt-4 w-full lg:mt-10 rounded-lg" src="{% static 'assets/about2.jpeg' %}" alt="office content 2">
+            </div>
+        </div>
+    </section>
+{% endblock %}

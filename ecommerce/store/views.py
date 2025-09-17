@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Product
+from .models import Product, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -10,17 +10,44 @@ from django import forms
 
 def home(request):
     products = Product.objects.all()
-    return render(request, 'home.html', {'products':products})
+    categories = Category.objects.all()
+    return render(request, 'home.html', {'products':products, 'categories':categories})
+
+
+
+def about(request):
+    categories = Category.objects.all()
+    return render(request, 'about.html', {'categories': categories})
+
 
 def products(request):
-    return render(request, 'products.html', {})
+    categories = Category.objects.all()
+    return render(request, 'products.html', {'categories': categories})
+    
 
 def product_details(request, pk):
     product = Product.objects.get(id=pk)
-    return render(request, 'product_details.html', {'product':product})
+    categories = Category.objects.all()
+    return render(request, 'product_details.html', {'product':product, 'categories':categories})
+
+def category(request,cat):
+    # replace hyphens with spaces
+    cat = cat.replace('-', ' ')
+    # Grab the category from the url
+    try:
+        category = Category.objects.get(name=cat)
+        products = Product.objects.filter(category=category)
+        categories = Category.objects.all()
+        return render(request, 'category.html', {'category':category, 'products':products, 'categories':categories})
+
+    except:
+        messages.success(request,('That category doesnt existt'))
+        return redirect('home')
+
 
 
 def login_user(request):
+    categories = Category.objects.all()
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -35,7 +62,7 @@ def login_user(request):
 
 
     else:
-        return render(request, 'login.html', {})
+        return render(request, 'login.html', {'categories':categories})
 
 def logout_user(request):
     logout(request)

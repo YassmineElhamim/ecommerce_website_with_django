@@ -14,11 +14,14 @@
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
   </svg></button>
             <!-- Dropdown menu -->
-            <div id="dropdownNavbar" class="z-10 hidden font-normal bg-yellow-50 rounded-lg shadow-sm w-44 border border-yellow-600  ">
+            <div id="dropdownNavbar" class="z-10 hidden font-normal bg-yellow-50 divide-y divide-yellow-600 rounded-lg shadow-sm w-44 border border-yellow-600  ">
+                <div class="py-1">
+                      <a href="{% url 'home' %}" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">All Products</a>
+                </div>
                 <ul class="py-2 text-sm  " aria-labelledby="dropdownLargeButton">
                   {% for category in categories %}
                     <li>
-                      <a href="#" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">{{category.name}}</a>
+                      <a href="{% url 'category' category.name %}" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">{{category.name}}</a>
                     </li>
                   {% endfor %}
                 </ul>

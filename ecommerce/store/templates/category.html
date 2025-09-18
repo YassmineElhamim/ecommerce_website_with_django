@@ -5,30 +5,25 @@
 
     <!-- Hero Section with Background -->
     <section class="relative bg-pink-100">
-    <!-- Background Image -->
-    <div class="absolute inset-0">
-        <img src="{% static 'assets/hero-morocco.png' %}" 
-            alt="Moroccan masks, bakhour burners and perfumes"
-            class="w-full h-full object-cover">
-        <!-- Pink overlay -->
-        <div class="absolute inset-0 bg-pink-200/70 mix-blend-multiply"></div>
-    </div>
+      <!-- Background Image -->
+      <div class="absolute inset-0">
+          <img src="{% static 'assets/hero-morocco.png' %}" 
+              alt="Moroccan masks, bakhour burners and perfumes"
+              class="w-full h-full object-cover">
+          <!-- Pink overlay -->
+          <div class="absolute inset-0 bg-pink-200/70 mix-blend-multiply"></div>
+      </div>
 
-    <!-- Content -->
-    <div class="relative max-w-7xl mx-auto px-6 py-32 flex flex-col items-center text-center text-stone-800">
-        <h1 class="text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-lg">
-        {{category.name}}
-        </h1>
-        <p class="mt-6 max-w-2xl text-lg md:text-xl text-white">
-        Category product
-        </p>
-        <div class="mt-8">
-        <a href="{% url 'home' %}"
-            class="px-8 py-3 rounded-full bg-yellow-600 text-white font-medium shadow-md hover:bg-yellow-700 transition">
-            Shop Now
-        </a>
-        </div>
-    </div>
+      <!-- Content -->
+      <div class="relative max-w-7xl mx-auto px-6 py-32 flex flex-col items-center text-center text-stone-800">
+          <h1 class="text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-lg">
+          {{category.name}}
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg md:text-xl text-white">
+          Category product
+          </p>
+      </div>
+    </section>
 
 <div class="bg-white">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">

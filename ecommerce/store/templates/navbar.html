@@ -6,7 +6,6 @@
       <div class="hidden md:flex space-x-4 text-stone-700 font-medium tracking-wide">
         <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Home</a>
         <a href="{% url 'about' %}" class="hover:text-yellow-600 transition">About Us</a>
-        <!-- <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Categories</a> -->
 
         <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 px-3 rounded-sm hover:text-yellow-50 transition md:hover:bg-transparent md:border-0 md:hover:text-yellow-600 md:p-0 md:w-auto ">
           Categories
@@ -16,7 +15,10 @@
             <!-- Dropdown menu -->
             <div id="dropdownNavbar" class="z-10 hidden font-normal bg-yellow-50 divide-y divide-yellow-600 rounded-lg shadow-sm w-44 border border-yellow-600  ">
                 <div class="py-1">
-                      <a href="{% url 'home' %}" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">All Products</a>
+                      <a href="{% url 'home' %}#all_products" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">All Products</a>
+                </div>
+                <div class="py-1">
+                      <a href="{% url 'categories' %}" class="block px-4 py-2 hover:bg-yellow-600 hover:text-white">All Categories</a>
                 </div>
                 <ul class="py-2 text-sm  " aria-labelledby="dropdownLargeButton">
                   {% for category in categories %}
@@ -28,7 +30,7 @@
 
             </div>
 
-        <a href="{% url 'home' %}" class="hover:text-yellow-600 transition">Contact</a>
+        <a href="{% url 'about' %}#contact" class="hover:text-yellow-600 transition">Contact</a>
       </div>
 
       <!-- Logo centered -->
@@ -39,7 +41,7 @@
       <!-- Right nav (hidden on mobile, shown on md+) -->
       <div class="hidden md:flex items-center space-x-6">
         <!-- Cart -->
-        <a href="{% url 'home' %}" class="relative text-stone-600 hover:text-yellow-600">
+        <a href="../../cart" class="relative text-stone-600 hover:text-yellow-600">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -82,12 +84,12 @@
   <div id="mobile-menu" class="hidden md:hidden bg-stone-50 border-t shadow-md">
     <div class="flex flex-col space-y-4 px-6 py-4 text-stone-700 font-medium tracking-wide">
       <a href="{% url 'home' %}" class="hover:text-yellow-600">Home</a>
-      <a href="{% url 'home' %}" class="hover:text-yellow-600">About Us</a>
-      <a href="{% url 'home' %}" class="hover:text-yellow-600">Categories</a>
-      <a href="{% url 'home' %}" class="hover:text-yellow-600">Contact</a>
+      <a href="{% url 'about' %}" class="hover:text-yellow-600">About Us</a>
+      <a href="{% url 'categories' %}" class="hover:text-yellow-600">Categories</a>
+      <a href="{% url 'about' %}#contact" class="hover:text-yellow-600">Contact</a>
 
       <!-- Cart (inside mobile menu) -->
-      <a href="{% url 'home' %}" class="relative text-stone-600 hover:text-yellow-600 flex items-center">
+      <a href="../../cart" class="relative text-stone-600 hover:text-yellow-600 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
              viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -103,10 +105,10 @@
 
       <!-- Auth buttons (inside mobile menu) -->
       {% if user.is_authenticated %}
-        <a href="{% url 'home' %}" class="hover:text-yellow-600">Logout</a>
+        <a href="{% url 'logout' %}" class="hover:text-yellow-600">Logout</a>
       {% else %}
-        <a href="{% url 'home' %}" class="hover:text-yellow-600">Login</a>
-        <a href="{% url 'home' %}" class="hover:text-yellow-600">Sign Up</a>
+        <a href="{% url 'login' %}" class="hover:text-yellow-600">Login</a>
+        <a href="{% url 'register' %}" class="hover:text-yellow-600">Sign Up</a>
       {% endif %}
     </div>
   </div>

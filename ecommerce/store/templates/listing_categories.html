@@ -1,0 +1,22 @@
+{% load static %}
+
+<div class="bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl py-10 sm:py-12 lg:max-w-none lg:py-16">
+      <div class="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:space-y-0 lg:gap-x-6">
+        {% for category in categories %}
+        <div class="group relative">
+        <img src="{% static 'assets/perfumes_cover.jpeg' %}" alt="" class="w-full rounded-lg bg-white object-cover group-hover:opacity-75 max-sm:h-80 sm:aspect-2/1 lg:aspect-square" />
+        <h3 class="mt-6 text-sm text-gray-500">
+            <a href="{% url 'category' category.name %}">
+            <span class="absolute inset-0"></span>
+            {{category.name}}
+            </a>
+        </h3>
+        <p class="text-base font-semibold text-gray-900">Lorem ipsum dolor sit amet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

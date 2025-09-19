@@ -26,6 +26,12 @@ def product_details(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, 'product_details.html', {'product':product})
 
+
+def categories(request):
+    return render(request,'categories.html',{})
+
+
+
 def category(request,cat):
     try:
         category = Category.objects.get(name=cat)

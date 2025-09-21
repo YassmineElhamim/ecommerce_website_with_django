@@ -41,16 +41,20 @@
       <!-- Right nav (hidden on mobile, shown on md+) -->
       <div class="hidden md:flex items-center space-x-6">
         <!-- Cart -->
-        <a href="../../cart" class="relative text-stone-600 hover:text-yellow-600">
+        <a href="{% url 'cart_summary' %}" class="relative text-stone-600 hover:text-yellow-600">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
           </svg>
           {% if cart.item_count %}
-          <span class="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">
+          <span class="absolute -top-1 -right-2 bg-yellow-600 text-white text-xs rounded-full px-1">
             {{ cart.item_count }}
           </span>
+            {% else %}
+            <span class="absolute -top-1 -right-2 bg-yellow-600 text-white text-xs rounded-full px-1">
+              0
+            </span>
           {% endif %}
         </a>
 
@@ -89,7 +93,7 @@
       <a href="{% url 'about' %}#contact" class="hover:text-yellow-600">Contact</a>
 
       <!-- Cart (inside mobile menu) -->
-      <a href="../../cart" class="relative text-stone-600 hover:text-yellow-600 flex items-center">
+      <a href="{% url 'cart_summary' %}" class="relative text-stone-600 hover:text-yellow-600 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
              viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,6 +104,10 @@
         <span class="ml-2 bg-rose-500 text-white text-xs rounded-full px-2 py-0.5">
           {{ cart.item_count }}
         </span>
+          {% else %}
+          <span class="ml-2 bg-yellow-600 text-white text-xs rounded-full px-2 py-0.5">
+            0
+          </span>
         {% endif %}
       </a>
 

@@ -4,8 +4,16 @@
 
 {% block content %}
 <section class="bg-white py-8 antialiased md:py-16">
+    <!-- <div class="max-w-5xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-yellow-600">
+        Shopping Cart
+      </h2>
+    </div> -->
   <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-    <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">Shopping Cart</h2>
+    <!-- <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">Shopping Cart</h2> -->
+      <h2 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl">
+        Shopping Cart
+      </h2>
 
     <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
       <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
@@ -63,7 +71,7 @@
 
 
 <!-- People also bought -->
-        </div>
+        <!-- </div>
         <div class="hidden xl:mt-8 xl:block">
           <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">People also bought</h3>
           <div class="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
@@ -169,7 +177,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
 
@@ -202,7 +210,7 @@
 
           <div class="flex items-center justify-center gap-2">
             <span class="text-sm font-normal text-gray-500 "> or </span>
-            <a href="#" title="" class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline ">
+            <a href="{% url 'home' %}" title="" class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline ">
               Continue Shopping
               <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />

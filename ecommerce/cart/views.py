@@ -4,7 +4,10 @@ from store.models import Product
 from django.http import JsonResponse
 
 def cart_summary(request):
-    return render(request, 'cart_summary.html', {})
+    cart= Cart(request)
+    cart_items = cart.get_items()
+    return render(request, 'cart_summary.html', {'cart_items':cart_items})
+    
 
 def cart_add(request):
     # get the cart 
@@ -12,13 +15,13 @@ def cart_add(request):
     # test for POST 
     if request.POST.get('action') == 'post' :
         # get stuff
-        product_id = int(request.POST.get('product_id'))
-        # lookup product in db
-        product = get_object_or_404(Product, id=product_id)
-        # save to session
-        cart.add(product=product)
-        # Return response
-        response = JsonResponse({'Product Name:': product.name})
+        product_id = request.POST.get('product_id')
+        if not product_id:
+            return JsonResponse({'error': 'No product_id'}, status=400)
+        product = get_object_or_404(Product, id=int(product_id))
+        cart.add(product=product, quantity=1)
+        return JsonResponse({'product_name': product.name})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
         return response
 
 def cart_update(request):

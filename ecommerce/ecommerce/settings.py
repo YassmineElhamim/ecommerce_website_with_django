@@ -122,7 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 # for the browser (URL path)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles") #Added after the error of the admin dashboard's style 
 
 # for Django to find your static files on disk

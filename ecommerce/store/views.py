@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from.forms import SignUpForm
+from .forms import SignUpForm
 from django import forms
 
 
@@ -57,10 +57,10 @@ def login_user(request):
             messages.success(request, 'Error logging in, please try again...')
             return redirect('login')
 
-
     else:
         return render(request, 'login.html', {})
 
+        
 def logout_user(request):
     logout(request)
     messages.success(request, 'You have successfully logged out!')

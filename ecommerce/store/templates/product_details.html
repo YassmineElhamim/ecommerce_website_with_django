@@ -51,11 +51,11 @@
               Add to favorites
             </a>
 
-            <a
-              href="#"
-              title=""
+            <button
               class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 "
-              role="button"
+              type="button"
+              value="{{ product.id }}"
+              id="add-cart"   
             >
               <svg
                 class="w-5 h-5 -ms-2 me-2"
@@ -76,7 +76,7 @@
               </svg>
 
               Add to cart
-            </a>
+            </button>
           </div>
 
           <hr class="my-6 md:my-8 border-gray-300 " />
@@ -88,6 +88,32 @@
       </div>
     </div>
   </section>
+<script>
+  // check if button pressed
+  $(document).on('click', '#add-cart', function(e){
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: '{% url "cart_add" %}',
+      data: {
+        product_id: $('#add-cart').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+      success: function(json){
+        console.log(json)
 
+        // to update all the counters
+        // $('.cart-count').each(function(){
+        //     $(this).text(json.cart_count);
+        // });
+      },
+
+      error:function(xhr, errmsg, err){
+        console.log(errmsg)
+      }
+    })
+  })
+</script>
 {% endblock %}
 

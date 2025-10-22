@@ -19,28 +19,30 @@ class Cart():
 # ________________________________________________________________
 
 
-    def add(self, product, quantity=1):
+    def add(self, product):
         product_id = str(product.id)
 
+        # logic
         if product_id in self.cart:
-            self.cart[product_id]['quantity'] +=quantity
+            pass
+    #         self.cart[product_id]['quantity'] +=quantity
         else:
-            self.cart[product_id] = {'price': str(product.price), 'quantity': quantity}
+            self.cart[product_id] = {'price': str(product.price)}
 
         self.session.modified = True
 
-    @property
-    def item_count(self):
-        return sum(item.get('quantity', 1) for item in self.cart.values())
+    # @property
+    # def item_count(self):
+    #     return sum(item.get('quantity', 1) for item in self.cart.values())
 
-    def get_items(self):
-        items=[]
-        for product_id, data in self.cart.items():
-            product = Product.objects.get(id=int(product_id))
-            items.append({
-                'product': product,
-                'quantity': data.get('quantity',1),
-                'total_price': float(data.get('price',0))*data.get('quantity',1)
+    # def get_items(self):
+    #     items=[]
+    #     for product_id, data in self.cart.items():
+    #         product = Product.objects.get(id=int(product_id))
+    #         items.append({
+    #             'product': product,
+    #             'quantity': data.get('quantity',1),
+    #             'total_price': float(data.get('price',0))*data.get('quantity',1)
 
-            })
-        return items
+    #         })
+    #     return items

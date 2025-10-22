@@ -14,12 +14,8 @@
                     <h3 class="mt-4 text-sm text-gray-700">{{product.name}}</h3>
                     <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}}DH</p>
                 </a>
-                  <a
-                    href="{% url 'cart_summary' %}"
-                    title=""
+                  <button
                     class="add-cart mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 "
-                    role="button"
-                    data-product="{{product.id}}"
                   >
                     <svg
                       class="w-5 h-5 -ms-2 me-2"
@@ -40,7 +36,7 @@
                     </svg>
 
                     Add to cart
-                  </a>
+                  </button>
                 </div>
             {% endfor %}
         
@@ -49,30 +45,30 @@
 </div>
 <script>
   // check if button pressed
-  $(document).on('click', '.add-cart', function(e){
-    e.preventDefault();
-    $.ajax({
-      type: 'POST',
-      url: '{% url "cart_add" %}',
-      data: {
-        product_id: $(this).data('product'),
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-        action: 'post'
-      },
-      success: function(json){
-        console.log(json)
+  //$(document).on('click', '#add-cart', function(e){
+  //  e.preventDefault();
+  //  $.ajax({
+  //    type: 'POST',
+  //    url: '{% url "cart_add" %}',
+  //    data: {
+  //      product_id: $('#add-cart').val(),
+  //      csrfmiddlewaretoken: '{{ csrf_token }}',
+  //      action: 'post'
+  //    },
+  //    success: function(json){
+  //      console.log(json)
 
         // to update all the counters
-        $('.cart-count').each(function(){
-            $(this).text(json.cart_count);
-        });
-      },
+        // $('.cart-count').each(function(){
+        //     $(this).text(json.cart_count);
+        // });
+  //    },
 
-      error:function(xhr, errmsg, err){
-        console.log(errmsg)
-      }
-    })
-  })
+  //    error:function(xhr, errmsg, err){
+  //      console.log(errmsg)
+  //    }
+  //  })
+  //})
 </script>
 
 {% endblock %}

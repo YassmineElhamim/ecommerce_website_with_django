@@ -45,18 +45,4 @@ class Cart():
 
 
 
-    # @property
-    # def item_count(self):
-    #     return sum(item.get('quantity', 1) for item in self.cart.values())
 
-    # def get_items(self):
-    #     items=[]
-    #     for product_id, data in self.cart.items():
-    #         product = Product.objects.get(id=int(product_id))
-    #         items.append({
-    #             'product': product,
-    #             'quantity': data.get('quantity',1),
-    #             'total_price': float(data.get('price',0))*data.get('quantity',1)
-
-    #         })
-    #     return items

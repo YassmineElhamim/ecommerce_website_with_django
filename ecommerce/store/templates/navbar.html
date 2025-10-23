@@ -47,15 +47,14 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
           </svg>
-          {% if cart.item_count %}
-          <span class="absolute -top-1 -right-2 bg-yellow-600 text-white text-xs rounded-full px-1">
-            {{ cart.item_count }}
-          </span>
-            {% else %}
-            <span  class="cart-count absolute -top-1 -right-2 bg-yellow-600 text-white text-xs rounded-full px-1">
-              0
+
+            <span  
+                class="cart-count absolute -top-1 -right-2 bg-yellow-600 text-white text-xs rounded-full px-1"
+                id='cart_quantity'
+            >
+                {{cart|length}}
             </span>
-          {% endif %}
+          
         </a>
 
         <!-- Auth buttons -->
@@ -100,15 +99,11 @@
                 d="M6 6h12l-1 14H7L6 6zm3 0a3 3 0 116 0"/>
         </svg>
         Cart
-        {% if cart.item_count %}
-        <span class="ml-2 bg-rose-500 text-white text-xs rounded-full px-2 py-0.5">
-          {{ cart.item_count }}
-        </span>
-          {% else %}
+
           <span class="cart-count ml-2 bg-yellow-600 text-white text-xs rounded-full px-2 py-0.5">
-            0
+            {{cart|length}}
           </span>
-        {% endif %}
+
       </a>
 
       <!-- Auth buttons (inside mobile menu) -->

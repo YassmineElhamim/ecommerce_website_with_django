@@ -31,6 +31,13 @@ class Cart():
 
         self.session.modified = True
 
+    def __len__(self):
+        return len(self.cart)
+
+    
+    
+
+
     # @property
     # def item_count(self):
     #     return sum(item.get('quantity', 1) for item in self.cart.values())

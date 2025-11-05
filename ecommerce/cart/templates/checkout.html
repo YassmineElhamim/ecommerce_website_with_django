@@ -1,9 +1,275 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block content %}
+<section class="bg-white py-8 antialiased md:py-16">
+  <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+    
+    <!-- Page Title -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-serif font-bold text-yellow-600 sm:text-3xl">
+        Checkout
+      </h2>
+      <p class="mt-2 text-gray-600">Complete your order</p>
+    </div>
 
-helloo checkout page
+    <!-- Show Messages -->
+    {% if messages %}
+      <div class="mb-6">
+        {% for message in messages %}
+          <div class="mb-4 rounded-lg p-4 {% if message.tags == 'error' %}bg-red-50 text-red-800{% elif message.tags == 'success' %}bg-green-50 text-green-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'checkout' %}" id="checkout-form">
+      {% csrf_token %}
+      
+      <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12">
+        
+        <!-- Left Column: Checkout Form -->
+        <div class="w-full lg:max-w-2xl">
+          
+          <!-- Contact Information -->
+          <div class="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-900">Contact Information</h3>
+            
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <label for="{{ form.full_name.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                  Full Name <span class="text-red-600">*</span>
+                </label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.0 }}</p>
+                {% endif %}
+              </div>
+              
+              <div>
+                <label for="{{ form.email.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                  Email <span class="text-red-600">*</span>
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                {% endif %}
+              </div>
+              
+              <div>
+                <label for="{{ form.phone.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                  Phone Number <span class="text-red-600">*</span>
+                </label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ form.phone.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Address -->
+          <div class="mt-6 space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-900">Shipping Address</h3>
+            
+            <div class="grid grid-cols-1 gap-4">
+              <div>
+                <label for="{{ form.address_line1.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                  Street Address <span class="text-red-600">*</span>
+                </label>
+                {{ form.address_line1 }}
+                {% if form.address_line1.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ form.address_line1.errors.0 }}</p>
+                {% endif %}
+              </div>
+              
+              <div>
+                <label for="{{ form.address_line2.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                  Apartment, Suite, etc. (Optional)
+                </label>
+                {{ form.address_line2 }}
+              </div>
+              
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div>
+                  <label for="{{ form.city.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                    City <span class="text-red-600">*</span>
+                  </label>
+                  {{ form.city }}
+                  {% if form.city.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.city.errors.0 }}</p>
+                  {% endif %}
+                </div>
+                
+                <div>
+                  <label for="{{ form.postal_code.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                    Postal Code <span class="text-red-600">*</span>
+                  </label>
+                  {{ form.postal_code }}
+                  {% if form.postal_code.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.postal_code.errors.0 }}</p>
+                  {% endif %}
+                </div>
+                
+                <div>
+                  <label for="{{ form.country.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                    Country <span class="text-red-600">*</span>
+                  </label>
+                  {{ form.country }}
+                  {% if form.country.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.country.errors.0 }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="mt-6 space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-900">Payment Method</h3>
+            
+            <div>
+              <label for="{{ form.payment_method.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                Select Payment Method <span class="text-red-600">*</span>
+              </label>
+              {{ form.payment_method }}
+              {% if form.payment_method.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.payment_method.errors.0 }}</p>
+              {% endif %}
+              
+              <div class="mt-4 rounded-lg bg-yellow-50 p-4">
+                <div class="flex">
+                  <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                  <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                      Cash on Delivery is currently the only available payment method. Pay when you receive your order.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Notes -->
+          <div class="mt-6 space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-900">Order Notes (Optional)</h3>
+            
+            <div>
+              <label for="{{ form.notes.id_for_label }}" class="mb-2 block text-sm font-medium text-gray-900">
+                Additional Information
+              </label>
+              {{ form.notes }}
+              <p class="mt-1 text-xs text-gray-500">
+                Special instructions for delivery, gift message, etc.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Order Summary -->
+        <div class="mt-6 w-full space-y-6 lg:mt-0 lg:max-w-md xl:max-w-lg">
+          
+          <!-- Order Summary -->
+          <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-900">Order Summary</h3>
+            
+            <!-- Cart Items -->
+            <div class="space-y-4 max-h-96 overflow-y-auto">
+              {% for item in cart_products %}
+                <div class="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <img src="{{ item.product.image.url }}" 
+                       alt="{{ item.product.name }}" 
+                       class="h-16 w-16 rounded object-cover" />
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      {{ item.product.name }}
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Qty: {{ item.quantity }} × {{ item.price }} DH
+                    </p>
+                  </div>
+                  <p class="text-sm font-semibold text-gray-900">
+                    {{ item.total_price }} DH
+                  </p>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="space-y-3 border-t border-gray-200 pt-4">
+              <dl class="flex items-center justify-between gap-4">
+                <dt class="text-base font-normal text-gray-500">Subtotal</dt>
+                <dd class="text-base font-medium text-gray-900">{{ cart_subtotal }} DH</dd>
+              </dl>
+
+              <dl class="flex items-center justify-between gap-4">
+                <dt class="text-base font-normal text-gray-500">Shipping</dt>
+                <dd class="text-base font-medium text-gray-900">
+                  {% if shipping_cost > 0 %}
+                    {{ shipping_cost }} DH
+                  {% else %}
+                    <span class="text-green-600">Free</span>
+                  {% endif %}
+                </dd>
+              </dl>
+
+              {% if discount %}
+                <dl class="flex items-center justify-between gap-4">
+                  <dt class="text-base font-normal text-gray-500">
+                    Discount
+                    {% if voucher_code %}
+                      <span class="text-xs">({{ voucher_code }})</span>
+                    {% endif %}
+                  </dt>
+                  <dd class="text-base font-medium text-green-600">-{{ discount }} DH</dd>
+                </dl>
+              {% endif %}
+
+              <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
+                <dt class="text-lg font-bold text-gray-900">Total</dt>
+                <dd class="text-lg font-bold text-gray-900">{{ cart_total }} DH</dd>
+              </dl>
+            </div>
+
+            <!-- Place Order Button -->
+            <button type="submit" 
+                    class="w-full flex items-center justify-center rounded-lg bg-yellow-500 px-5 py-3 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300">
+              <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Place Order
+            </button>
+
+            <div class="flex items-center justify-center gap-2">
+              <span class="text-sm font-normal text-gray-500">or</span>
+              <a href="{% url 'cart_summary' %}" class="inline-flex items-center gap-2 text-sm font-medium text-yellow-600 underline hover:no-underline">
+                Return to Cart
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </form>
+
+  </div>
+</section>
+
+<script>
+// Form validation
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+  const button = this.querySelector('button[type="submit"]');
+  button.disabled = true;
+  button.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+});
+</script>
 
 {% endblock %}

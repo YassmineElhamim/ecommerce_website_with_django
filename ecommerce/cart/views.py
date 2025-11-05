@@ -3,7 +3,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from .cart import Cart
-from store.models import Product
+from store.models import Product, Order, OrderItem
+from store.forms import CheckoutForm, GuestCheckoutForm
+from django.db import transaction
 from decimal import Decimal
 import logging
 
@@ -435,3 +437,222 @@ def get_cart_count(request):
             'success': False,
             'cart_count': 0
         }, status=500)
+
+def checkout(request):
+    """
+    Checkout page - collect shipping info and process order
+    
+    Flow:
+    1. Display cart summary
+    2. Show checkout form
+    3. Validate form
+    4. Create order and order items
+    5. Clear cart
+    6. Redirect to order confirmation
+    """
+    cart = Cart(request)
+    
+    # Check if cart is empty
+    if cart.is_empty():
+        messages.warning(request, 'Your cart is empty!')
+        return redirect('cart_summary')
+    
+    # Get cart details
+    cart_products = cart.get_products()
+    cart_subtotal = cart.get_subtotal()
+    discount = Decimal(str(request.session.get('discount', 0)))
+    
+    # Calculate shipping (you can make this dynamic based on location/weight)
+    shipping_cost = calculate_shipping(cart_products, request)
+    
+    cart_total = cart_subtotal + shipping_cost - discount
+    
+    # Handle form submission
+    if request.method == 'POST':
+        form = GuestCheckoutForm(request.POST)
+        
+        if form.is_valid():
+            try:
+                # Create order in a transaction (all-or-nothing)
+                with transaction.atomic():
+                    # Create the order
+                    order = Order.objects.create(
+                        email=form.cleaned_data['email'],
+                        phone=form.cleaned_data['phone'],
+                        full_name=form.cleaned_data['full_name'],
+                        address_line1=form.cleaned_data['address_line1'],
+                        address_line2=form.cleaned_data.get('address_line2', ''),
+                        city=form.cleaned_data['city'],
+                        postal_code=form.cleaned_data['postal_code'],
+                        country=form.cleaned_data['country'],
+                        subtotal=cart_subtotal,
+                        shipping_cost=shipping_cost,
+                        discount=discount,
+                        total=cart_total,
+                        payment_method=form.cleaned_data['payment_method'],
+                        notes=form.cleaned_data.get('notes', ''),
+                        status='pending'
+                    )
+                    
+                    # Create order items
+                    for item in cart_products:
+                        product = item['product']
+                        quantity = item['quantity']
+                        
+                        # Check stock availability
+                        if product.stock < quantity:
+                            raise Exception(f'Insufficient stock for {product.name}')
+                        
+                        # Create order item
+                        OrderItem.objects.create(
+                            order=order,
+                            product=product,
+                            product_name=product.name,
+                            product_price=product.get_price(),
+                            quantity=quantity
+                        )
+                        
+                        # Reduce stock
+                        product.stock -= quantity
+                        if product.stock == 0:
+                            product.is_disponible = False
+                        product.save()
+                    
+                    # Clear the cart
+                    cart.clear()
+                    
+                    # Clear discount/voucher
+                    if 'voucher_code' in request.session:
+                        del request.session['voucher_code']
+                    if 'discount' in request.session:
+                        del request.session['discount']
+                    
+                    # Success message
+                    messages.success(
+                        request, 
+                        f'Order {order.order_number} placed successfully! You will receive a confirmation email shortly.'
+                    )
+                    
+                    # Redirect to order confirmation page
+                    return redirect('order_confirmation', order_number=order.order_number)
+                    
+            except Exception as e:
+                logger.error(f"Error processing order: {str(e)}")
+                messages.error(request, f'Error processing order: {str(e)}')
+                
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        # Pre-fill form if user is logged in
+        initial_data = {}
+        if request.user.is_authenticated:
+            initial_data = {
+                'email': request.user.email,
+                'full_name': request.user.get_full_name(),
+            }
+        
+        form = GuestCheckoutForm(initial=initial_data)
+    
+    context = {
+        'form': form,
+        'cart_products': cart_products,
+        'cart_subtotal': cart_subtotal,
+        'shipping_cost': shipping_cost,
+        'discount': discount if discount > 0 else None,
+        'cart_total': cart_total,
+        'voucher_code': request.session.get('voucher_code'),
+    }
+    
+    return render(request, 'checkout.html', context)
+
+
+def calculate_shipping(cart_products, request):
+    """
+    Calculate shipping cost based on various factors
+    
+    You can customize this based on:
+    - Location/city
+    - Total weight
+    - Total price (free shipping over certain amount)
+    - Number of items
+    """
+    cart_subtotal = sum(item['total_price'] for item in cart_products)
+    
+    # Example: Free shipping for orders over 500 DH
+    FREE_SHIPPING_THRESHOLD = Decimal('500')
+    if cart_subtotal >= FREE_SHIPPING_THRESHOLD:
+        return Decimal('0')
+    
+    # Example: Flat rate shipping
+    FLAT_RATE = Decimal('30')  # 30 DH shipping
+    
+    # Or calculate based on location
+    # city = request.POST.get('city', '').lower()
+    # if city in ['casablanca', 'rabat']:
+    #     return Decimal('30')
+    # elif city in ['marrakech', 'tanger']:
+    #     return Decimal('50')
+    # else:
+    #     return Decimal('70')
+    
+    return FLAT_RATE
+
+
+def order_confirmation(request, order_number):
+    """
+    Order confirmation page after successful checkout
+    """
+    try:
+        order = Order.objects.get(order_number=order_number)
+        
+        # Get order items
+        order_items = OrderItem.objects.filter(order=order).select_related('product')
+        
+        context = {
+            'order': order,
+            'order_items': order_items,
+        }
+        
+        return render(request, 'order_confirmation.html', context)
+        
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found')
+        return redirect('home')
+
+
+def order_tracking(request, order_number):
+    """
+    Track order status
+    """
+    try:
+        order = Order.objects.get(order_number=order_number)
+        order_items = OrderItem.objects.filter(order=order).select_related('product')
+        
+        context = {
+            'order': order,
+            'order_items': order_items,
+        }
+        
+        return render(request, 'order_tracking.html', context)
+        
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found')
+        return redirect('home')
+
+
+def my_orders(request):
+    """
+    Display all orders for logged in user
+    """
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Please login to view your orders')
+        return redirect('login')
+    
+    # Get orders for this user
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    
+    context = {
+        'orders': orders,
+    }
+    
+    return render(request, 'my_orders.html', context)

@@ -373,42 +373,7 @@ document.querySelectorAll('.add-cart').forEach(btn => {
   });
 });
 
-// Voucher form
-const voucherForm = document.getElementById('voucher-form');
-if (voucherForm) {
-  voucherForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(voucherForm);
-    const messageDiv = document.getElementById('voucher-message');
-    
-    fetch("{% url 'apply_voucher' %}", {
-      method: 'POST',
-      headers: { 'X-CSRFToken': csrftoken },
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      messageDiv.classList.remove('hidden');
-      if (data.success) {
-        messageDiv.className = 'text-sm text-green-600';
-        messageDiv.textContent = data.message;
-        // Update totals if provided
-        if (data.cart_total) {
-          document.getElementById('cart-total').textContent = `${data.cart_total} DH`;
-        }
-      } else {
-        messageDiv.className = 'text-sm text-red-600';
-        messageDiv.textContent = data.message || 'Invalid voucher code';
-      }
-    })
-    .catch(error => {
-      messageDiv.classList.remove('hidden');
-      messageDiv.className = 'text-sm text-red-600';
-      messageDiv.textContent = 'An error occurred. Please try again.';
-    });
-  });
-}
+
 </script>
 
 {% endblock %}

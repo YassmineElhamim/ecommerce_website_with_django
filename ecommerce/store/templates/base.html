@@ -41,9 +41,39 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
       document.getElementById('menu-toggle').addEventListener('click', function () {
         document.getElementById('mobile-menu').classList.toggle('hidden');
+      });
+
+      $(document).on('click', '.add-cart', function(e){
+        e.preventDefault();
+        const btn = $(this);
+        const pid = btn.data('product-id') || btn.val();
+        if (!pid) return console.warn('no product id');
+
+        $.ajax({
+          type: 'POST',
+          url: '{% url "cart_add" %}',
+          data: {
+            product_id: pid,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+          },
+          success: function(json){
+            if (json && json.qty !== undefined) {
+              $('#cart_quantity').text(json.qty);
+              $('.cart-count').text(json.qty); // update any other badges
+              const orig = btn.html();
+              btn.html('Added ✓').prop('disabled', true);
+              setTimeout(()=> btn.html(orig).prop('disabled', false), 1400);
+            }
+          },
+          error: function(xhr, errmsg, err){
+            console.error(errmsg);
+          }
+        });
       });
     </script>
   {% block content %}

@@ -5,327 +5,410 @@
 {% block content %}
 <section class="bg-white py-8 antialiased md:py-16">
   <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-      <h2 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl">
-        Shopping Cart
-      </h2>
- {% if cart_products %}
-    <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-      <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-        <div class="space-y-6">
-          {% for product in cart_products %}
-          <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:p-6">
-            <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                <a href="#" class="shrink-0 md:order-1">
-                  <img class="h-20 w-20 " src="{{product.image.url}}" alt="" />
-                </a>
+    <h2 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl">
+      Shopping Cart
+    </h2>
 
-                <label for="counter-input" class="sr-only">Choose quantity:</label>
-                <div class="flex items-center justify-between md:order-3 md:justify-end">
-                    <div class="flex items-center">
-                      <button type="button" data-input-counter-decrement="counter-input" 
-                              class="decrement inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
-                        <svg class="h-2.5 w-2.5 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                        </svg>
-                      </button>
+    {% if cart_products %}
+      <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+        <!-- Cart Items -->
+        <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+          <div class="space-y-6">
+            {% for item in cart_products %}
+              {% with product=item.product %}
+                <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:p-6" data-product-id="{{ product.id }}">
+                  <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+                    <!-- Product Image -->
+                    <a href="{% url 'product_details' product.id %}" class="shrink-0 md:order-1">
+                      <img class="h-20 w-20 rounded object-cover" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                    </a>
 
-                      <input type="text"  data-input-counter 
-                            class="counter-input w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0" 
-                            value="2" required readonly />
+                    <!-- Quantity Controls -->
+                    <div class="flex items-center justify-between md:order-3 md:justify-end">
+                      <div class="flex items-center">
+                        <button type="button" 
+                                class="decrement inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                                data-product-id="{{ product.id }}"
+                                aria-label="Decrease quantity">
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                          </svg>
+                        </button>
 
-                      <button type="button" data-input-counter-increment="counter-input" 
-                              class="increment inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
-                        <svg class="h-2.5 w-2.5 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                        </svg>
-                      </button>
+                        <input type="text" 
+                               id="counter-input-{{ product.id }}" 
+                               class="w-12 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0" 
+                               value="{{ item.quantity }}" 
+                               readonly />
+
+                        <button type="button" 
+                                class="increment inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                                data-product-id="{{ product.id }}"
+                                aria-label="Increase quantity">
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <!-- Price -->
+                      <div class="text-end md:order-4 md:w-32">
+                        <p class="text-base font-bold text-gray-900">{{ product.price }} DH</p>
+                        <p class="text-sm text-gray-500" id="subtotal-{{ product.id }}">{{ item.total_price }} DH</p>
+                      </div>
                     </div>
 
-                  <div class="text-end md:order-4 md:w-32">
-                    <p class="text-base font-bold text-gray-900 ">{{product.price}}DH</p>
+                    <!-- Product Info -->
+                    <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
+                      <a href="{% url 'product_details' product.id %}" class="text-base font-medium text-gray-900 hover:underline">
+                        {{ product.name }}
+                      </a>
+                      <div class="flex items-center gap-4">
+                        <button type="button" 
+                                class="favorite-btn inline-flex items-center text-sm font-medium text-gray-500 hover:text-yellow-600 hover:underline"
+                                data-product-id="{{ product.id }}">
+                          <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                          Add to Favorites
+                        </button>
+
+                        <button type="button" 
+                                class="remove-btn inline-flex items-center text-sm font-medium text-red-600 hover:underline"
+                                data-product-id="{{ product.id }}">
+                          <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Remove
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                  <a href="#" class="text-base font-medium text-gray-900 hover:underline ">{{product.name}}</a>
-                <div class="flex items-center gap-4">
-                  <button type="button" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline ">
-                    <svg class="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-                    </svg>
-                    Add to Favorites
-                  </button>
-
-                  <button type="button" class="inline-flex items-center text-sm font-medium text-red-600 hover:underline ">
-                    <svg class="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                    </svg>
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
+              {% endwith %}
+            {% endfor %}
           </div>
-          {% endfor %}
-          {% comment %} {% else %}
-            <div class="h-screen max-w-5xl mx-auto text-center p-36">
-              <h5 class="text-xl font-serif font-bold text-gray-500 sm:text-2xl">
-                Your cart is craving for some products :)
-              </h5>
-            </div>
-          {% endif %} {% endcomment %}
-          
-
-
-
-
         </div>
-    </div>
 
+        <!-- Order Summary -->
+        <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+          <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+            <p class="text-xl font-semibold text-gray-900">Order Summary</p>
 
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <dl class="flex items-center justify-between gap-4">
+                  <dt class="text-base font-normal text-gray-500">Subtotal</dt>
+                  <dd class="text-base font-medium text-gray-900" id="cart-subtotal">{{ cart_subtotal|default:"0" }} DH</dd>
+                </dl>
 
-
-    <!-- Order summary -->
-          <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-            <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-              <p class="text-xl font-semibold text-gray-900">Order summary</p>
-
-              <div class="space-y-4">
-                <div class="space-y-2">
+                {% if cart_savings %}
                   <dl class="flex items-center justify-between gap-4">
-                    <dt class="text-base font-normal text-gray-500 ">Original price</dt>
-                    <dd class="text-base font-medium text-gray-900 ">$7,592.00</dd>
+                    <dt class="text-base font-normal text-gray-500">Savings</dt>
+                    <dd class="text-base font-medium text-green-600">-{{ cart_savings }} DH</dd>
                   </dl>
+                {% endif %}
 
-                  <dl class="flex items-center justify-between gap-4">
-                    <dt class="text-base font-normal text-gray-500 ">Savings</dt>
-                    <dd class="text-base font-medium text-green-600">-$299.00</dd>
-                  </dl>
-                </div>
-
-                <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 ">
-                  <dt class="text-base font-bold text-gray-900 ">Total</dt>
-                  <dd class="text-base font-bold text-gray-900 ">$8,191.00</dd>
+                <dl class="flex items-center justify-between gap-4">
+                  <dt class="text-base font-normal text-gray-500">Shipping</dt>
+                  <dd class="text-base font-medium text-gray-900">{{ shipping_cost|default:"Free" }}</dd>
                 </dl>
               </div>
 
-              <a href="#" class="mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 ">Proceed to Checkout</a>
+              <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
+                <dt class="text-base font-bold text-gray-900">Total</dt>
+                <dd class="text-base font-bold text-gray-900" id="cart-total">{{ cart_total|default:"0" }} DH</dd>
+              </dl>
+            </div>
 
-              <div class="flex items-center justify-center gap-2">
-                <span class="text-sm font-normal text-gray-500 "> or </span>
-                <a href="{% url 'home' %}" title="" class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline ">
-                  Continue Shopping
-                  <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                  </svg>
-                </a>
+            <a href="{% url 'checkout' %}" class="mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300">
+              Proceed to Checkout
+            </a>
+
+            <div class="flex items-center justify-center gap-2">
+              <span class="text-sm font-normal text-gray-500">or</span>
+              <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-sm font-medium text-yellow-600 underline hover:no-underline">
+                Continue Shopping
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Voucher Form -->
+          <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+            <form id="voucher-form" class="space-y-4">
+              {% csrf_token %}
+              <div>
+                <label for="voucher" class="mb-2 block text-sm font-medium text-gray-900">
+                  Do you have a voucher or gift card?
+                </label>
+                <input type="text" 
+                       id="voucher" 
+                       name="voucher_code"
+                       class="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-yellow-500 focus:ring-yellow-500" 
+                       placeholder="Enter your coupon code" />
               </div>
-            </div>
-
-            <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-              <form class="space-y-4">
-                <div>
-                  <label for="voucher" class="mb-2 block text-sm font-medium text-gray-900 "> Do you have a voucher or gift card? </label>
-                  <input type="text" id="voucher" class="block w-full rounded-lg border border-gray-200 bg-white-50 p-2.5 text-sm text-gray-900 focus:border-yellow-500 focus:ring-yellow-500 " placeholder="Enter your coupon code" required />
-                </div>
-                <button type="submit" class="mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 ">Apply Code</button>
-              </form>
-            </div>
-
-
+              <button type="submit" class="w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                Apply Code
+              </button>
+              <div id="voucher-message" class="hidden text-sm"></div>
+            </form>
           </div>
         </div>
       </div>
-      <!-- People also bought -->
-      <div class="pt-36 mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <h3 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl pb-16">People also bought</h3>
-          {% comment %} <div class="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
-            <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <a href="#" class="overflow-hidden rounded">
-                <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="imac image" />
-                <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="imac image" />
-              </a>
-              <div>
-                <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">iMac 27”</a>
-                <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-              </div>
-              <div>
-                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                  <span class="line-through"> $399,99 </span>
-                </p>
-                <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">$299</p>
-              </div>
-              <div class="mt-6 flex items-center gap-2.5">
-                <button data-tooltip-target="favourites-tooltip-1" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                  <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                  </svg>
-                </button>
-                <div id="favourites-tooltip-1" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                  Add to favourites
-                  <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                  <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                  </svg>
-                  Add to cart
-                </button>
-              </div>
-            </div>
-            <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <a href="#" class="overflow-hidden rounded">
-                <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-light.svg" alt="imac image" />
-                <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-dark.svg" alt="imac image" />
-              </a>
-              <div>
-                <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">Playstation 5</a>
-                <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-              </div>
-              <div>
-                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                  <span class="line-through"> $799,99 </span>
-                </p>
-                <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">$499</p>
-              </div>
-              <div class="mt-6 flex items-center gap-2.5">
-                <button data-tooltip-target="favourites-tooltip-2" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                  <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                  </svg>
-                </button>
-                <div id="favourites-tooltip-2" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                  Add to favourites
-                  <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                  <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                  </svg>
-                  Add to cart
-                </button>
-              </div>
-            </div>
-            <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <a href="#" class="overflow-hidden rounded">
-                <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-light.svg" alt="imac image" />
-                <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-dark.svg" alt="imac image" />
-              </a>
-              <div>
-                <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">Apple Watch Series 8</a>
-                <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-              </div>
-              <div>
-                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                  <span class="line-through"> $1799,99 </span>
-                </p>
-                <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">$1199</p>
-              </div>
-              <div class="mt-6 flex items-center gap-2.5">
-                <button data-tooltip-target="favourites-tooltip-3" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                  <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                  </svg>
-                </button>
-                <div id="favourites-tooltip-3" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                  Add to favourites
-                  <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-  
-                <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                  <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                  </svg>
-                  Add to cart
-                </button>
-              </div>
-            </div>
-          </div> {% endcomment %}
+
+      <!-- People Also Bought -->
+      <div class="pt-16 mx-auto max-w-screen-xl px-4 2xl:px-0">
+        <h3 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl pb-8">People also bought</h3>
         <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-8">
-            {% for product in products %}
-              <div class="group">
-                <a href="{% url 'product_details' product.id%}" class="">
-                    <img src="{{product.image.url}}" alt="" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8" />
-                    <h3 class="mt-4 text-sm text-gray-700">{{product.name}}</h3>
-                    <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}}DH</p>
-                </a>
-                  <button
-                    class="add-cart mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 "
-                  >
-                    <svg
-                      class="w-5 h-5 -ms-2 me-2"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                      />
-                    </svg>
-
-                    Add to cart
-                  </button>
-                </div>
-            {% endfor %}
-        
+          {% for product in recommended_products %}
+            <div class="group">
+              <a href="{% url 'product_details' product.id %}">
+                <img src="{{ product.image.url }}" 
+                     alt="{{ product.name }}" 
+                     class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8" />
+                <h3 class="mt-4 text-sm text-gray-700">{{ product.name }}</h3>
+                <p class="mt-1 text-lg font-medium text-gray-900">{{ product.price }} DH</p>
+              </a>
+              <button class="add-cart mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                      data-product-id="{{ product.id }}">
+                <svg class="w-5 h-5 -ms-2 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Add to cart
+              </button>
+            </div>
+          {% endfor %}
         </div>
+      </div>
 
-
-      </div> 
-      {% else %}
-        <div class="h-50 max-w-5xl mx-auto text-center p-36">
-          <h5 class="text-xl font-serif font-bold text-gray-500 sm:text-2xl">
+    {% else %}
+      <!-- Empty Cart -->
+      <div class="h-96 flex items-center justify-center">
+        <div class="text-center">
+          <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <h5 class="mt-4 text-xl font-serif font-bold text-gray-500 sm:text-2xl">
             Your cart is craving for some products :)
           </h5>
+          <a href="{% url 'home' %}" class="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            Start Shopping
+          </a>
         </div>
-        <div class=" mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <h3 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl pb-16">You might like :</h3>
-          <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-8">
-            {% for product in products %}
-              <div class="group">
-                <a href="{% url 'product_details' product.id%}" class="">
-                    <img src="{{product.image.url}}" alt="" class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8" />
-                    <h3 class="mt-4 text-sm text-gray-700">{{product.name}}</h3>
-                    <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}}DH</p>
-                </a>
-                  <button
-                    class="add-cart mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 focus:outline-none bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-yellow-50 "
-                  >
-                    <svg
-                      class="w-5 h-5 -ms-2 me-2"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                      />
-                    </svg>
+      </div>
 
-                    Add to cart
-                  </button>
-                </div>
-            {% endfor %}
-        
+      <!-- Recommended Products -->
+      <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+        <h3 class="text-xl font-serif font-bold text-yellow-600 sm:text-2xl pb-8">You might like:</h3>
+        <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-8">
+          {% for product in products %}
+            <div class="group">
+              <a href="{% url 'product_details' product.id %}">
+                <img src="{{ product.image.url }}" 
+                     alt="{{ product.name }}" 
+                     class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8" />
+                <h3 class="mt-4 text-sm text-gray-700">{{ product.name }}</h3>
+                <p class="mt-1 text-lg font-medium text-gray-900">{{ product.price }} DH</p>
+              </a>
+              <button class="add-cart mt-3 w-full flex items-center justify-center py-2.5 px-5 text-sm font-medium text-yellow-500 bg-white rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                      data-product-id="{{ product.id }}">
+                <svg class="w-5 h-5 -ms-2 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Add to cart
+              </button>
+            </div>
+          {% endfor %}
         </div>
-      {% endif %}
-    </section>
+      </div>
+    {% endif %}
+  </div>
+</section>
 
 <script>
+// Get CSRF token
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let c of cookies) {
+      c = c.trim();
+      if (c.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(c.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
+const csrftoken = getCookie('csrftoken');
+
+// Update cart quantity
+function updateCart(productId, quantity) {
+  const formData = new FormData();
+  formData.append('action', 'post');
+  formData.append('product_id', productId);
+  formData.append('quantity', quantity);
+
+  return fetch("{% url 'cart_update' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken },
+    body: formData
+  })
+  .then(response => response.json())
+  .catch(error => {
+    console.error('Error:', error);
+    return null;
+  });
+}
+
+// Remove item from cart
+function removeFromCart(productId) {
+  const formData = new FormData();
+  formData.append('action', 'remove');
+  formData.append('product_id', productId);
+
+  return fetch("{% url 'cart_update' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken },
+    body: formData
+  })
+  .then(response => response.json())
+  .catch(error => {
+    console.error('Error:', error);
+    return null;
+  });
+}
+
+// Increment/Decrement quantity
+document.querySelectorAll('.decrement, .increment').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const productId = e.currentTarget.getAttribute('data-product-id');
+    const input = document.querySelector(`#counter-input-${productId}`);
+    let quantity = parseInt(input.value, 10) || 1;
+
+    if (e.currentTarget.classList.contains('increment')) {
+      quantity++;
+    } else {
+      quantity = Math.max(1, quantity - 1);
+    }
+
+    input.value = quantity;
+
+    updateCart(productId, quantity).then(data => {
+      if (data) {
+        // Update item subtotal
+        if (data.item_subtotal !== undefined) {
+          const subtotal = document.getElementById(`subtotal-${productId}`);
+          if (subtotal) subtotal.textContent = `${data.item_subtotal} DH`;
+        }
+
+        // Update cart totals
+        if (data.cart_total !== undefined) {
+          const total = document.getElementById('cart-total');
+          if (total) total.textContent = `${data.cart_total} DH`;
+        }
+
+        if (data.cart_subtotal !== undefined) {
+          const subtotal = document.getElementById('cart-subtotal');
+          if (subtotal) subtotal.textContent = `${data.cart_subtotal} DH`;
+        }
+      }
+    });
+  });
+});
+
+// Remove button
+document.querySelectorAll('.remove-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const productId = e.currentTarget.getAttribute('data-product-id');
+    
+    if (confirm('Are you sure you want to remove this item from your cart?')) {
+      removeFromCart(productId).then(data => {
+        if (data && data.success) {
+          // Remove the item from DOM
+          const itemElement = document.querySelector(`[data-product-id="${productId}"]`);
+          if (itemElement) {
+            itemElement.remove();
+          }
+
+          // Reload page if cart is empty
+          if (data.cart_empty) {
+            location.reload();
+          } else {
+            // Update cart totals
+            if (data.cart_total !== undefined) {
+              const total = document.getElementById('cart-total');
+              if (total) total.textContent = `${data.cart_total} DH`;
+            }
+          }
+        }
+      });
+    }
+  });
+});
+
+// Add to cart (for recommended products)
+document.querySelectorAll('.add-cart').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const productId = e.currentTarget.getAttribute('data-product-id');
+    
+    updateCart(productId, 1).then(data => {
+      if (data && data.success) {
+        // Show success message
+        const originalText = e.currentTarget.innerHTML;
+        e.currentTarget.innerHTML = '<span>Added ✓</span>';
+        e.currentTarget.disabled = true;
+        
+        setTimeout(() => {
+          e.currentTarget.innerHTML = originalText;
+          e.currentTarget.disabled = false;
+        }, 2000);
+      }
+    });
+  });
+});
+
+// Voucher form
+const voucherForm = document.getElementById('voucher-form');
+if (voucherForm) {
+  voucherForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(voucherForm);
+    const messageDiv = document.getElementById('voucher-message');
+    
+    fetch("{% url 'apply_voucher' %}", {
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      messageDiv.classList.remove('hidden');
+      if (data.success) {
+        messageDiv.className = 'text-sm text-green-600';
+        messageDiv.textContent = data.message;
+        // Update totals if provided
+        if (data.cart_total) {
+          document.getElementById('cart-total').textContent = `${data.cart_total} DH`;
+        }
+      } else {
+        messageDiv.className = 'text-sm text-red-600';
+        messageDiv.textContent = data.message || 'Invalid voucher code';
+      }
+    })
+    .catch(error => {
+      messageDiv.classList.remove('hidden');
+      messageDiv.className = 'text-sm text-red-600';
+      messageDiv.textContent = 'An error occurred. Please try again.';
+    });
+  });
+}
 </script>
+
 {% endblock %}

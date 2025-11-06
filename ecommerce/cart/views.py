@@ -621,9 +621,9 @@ def order_confirmation(request, order_number):
 
 
 def order_tracking(request, order_number):
-    """
-    Track order status
-    """
+    
+    # Track order status
+    
     try:
         order = Order.objects.get(order_number=order_number)
         order_items = OrderItem.objects.filter(order=order).select_related('product')
@@ -641,9 +641,9 @@ def order_tracking(request, order_number):
 
 
 def my_orders(request):
-    """
-    Display all orders for logged in user
-    """
+    
+    # Display all orders for logged in user
+    
     if not request.user.is_authenticated:
         messages.warning(request, 'Please login to view your orders')
         return redirect('login')

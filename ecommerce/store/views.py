@@ -54,7 +54,7 @@ def login_user(request):
             messages.success(request, 'You have successfully logged in!')
             return redirect('home')
         else:
-            messages.success(request, 'Error logging in, please try again...')
+            messages.error(request, 'Error logging in, please try again...')
             return redirect('login')
 
     else:
@@ -80,7 +80,7 @@ def register_user(request):
             messages.success(request, ("Registration Successful! You are now logged in."))
             return redirect('home')
         else:
-            messages.success(request, ("whoops! something went wrong - please try again..."))
+            messages.warning(request, ("whoops! something went wrong - please try again..."))
             return render(request, 'register.html', {'form': form})
     else:
         return render(request, 'register.html',{'form':form})

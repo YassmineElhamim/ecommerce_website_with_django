@@ -6,11 +6,33 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm
 from django import forms
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
+# def home(request):
+#     products = Product.objects.all()
+#     if request.GET.get('search'):
+#         products = products.filter(name__icontains=request.GET.get('search'))
+#     return render(request, 'home.html', {'products':products})
 
 def home(request):
     products = Product.objects.all()
-    return render(request, 'home.html', {'products':products})
+    paginator = Paginator(products, 4)
+
+    page_number = request.GET.get('page')
+    try:
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    search_query = request.GET.get('search')
+    if search_query:
+        products = products.filter(name__icontains=search_query)
+
+
+    return render(request, 'home.html', {'page_obj':page_obj, 'search_query':search_query})
 
 
 
@@ -36,7 +58,18 @@ def category(request,cat):
     try:
         category = Category.objects.get(name=cat)
         products = Product.objects.filter(category=category)
-        return render(request, 'category.html', {'category':category, 'products':products})
+
+        paginator = Paginator(products, 2)
+
+        page_number = request.GET.get('page')
+        try:
+            page_obj = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        
+        return render(request, 'category.html', {'category':category, 'page_obj':page_obj})
 
     except:
         messages.success(request,('That category doesnt existt'))

@@ -8,6 +8,8 @@ from store.forms import CheckoutForm, GuestCheckoutForm
 from django.db import transaction
 from decimal import Decimal
 import logging
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -298,8 +300,6 @@ def apply_voucher(request):
                 'message': 'Please enter a voucher code'
             }, status=400)
         
-        # todo: Implement your voucher validation logic here
-        # Example implementation:
         
         # Dummy voucher for testing - Remove this in production
         if voucher_code == 'SAVE10':
@@ -407,7 +407,7 @@ def checkout(request):
     cart_products = cart.get_products()
     cart_subtotal = cart.get_subtotal()
     discount = Decimal(str(request.session.get('discount', 0)))
-    shipping_cost = Decimal('0')  # Calculate based on your logic
+    shipping_cost = Decimal('0')  
     cart_total = cart.get_total(shipping_cost) - discount
     
     context = {
@@ -493,7 +493,8 @@ def checkout(request):
                         notes=form.cleaned_data.get('notes', ''),
                         status='pending'
                     )
-                    
+
+
                     # Create order items
                     for item in cart_products:
                         product = item['product']
@@ -619,6 +620,22 @@ def order_confirmation(request, order_number):
         messages.error(request, 'Order not found')
         return redirect('home')
 
+def send_order_confirmation_email(order):
+    subject = f'OrderConfirmation - {order.order_number}'
+
+    html_message = render_to_string('emails/order_confirmation.html', {
+        'order':order,
+        'order_items': Order.items.all()
+        })
+    send_mail(
+        subject=subject,
+        message='',
+        html_message=html_message,
+        from_email='yalm45603@gmail.com',
+        recipient_list=[order.mail],
+        fail_silently=False,
+    )
+
 
 def order_tracking(request, order_number):
     
@@ -656,3 +673,5 @@ def my_orders(request):
     }
     
     return render(request, 'my_orders.html', context)
+
+

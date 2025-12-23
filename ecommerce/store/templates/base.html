@@ -91,12 +91,18 @@
           action: 'post'
         },
         success: function(json){
-          if (json && json.qty !== undefined) {
-            $('#cart_quantity').text(json.qty);
-            $('.cart-count').text(json.qty);
+          if (json && (json.cart_qty !== undefined || json.qty !== undefined)) {
+            const qty = (json.cart_qty !== undefined) ? json.cart_qty : json.qty;
+            $('#cart_quantity').text(qty);
+            $('.cart-count').text(qty);
             const orig = btn.html();
             btn.html('Added ✓').prop('disabled', true);
             setTimeout(()=> btn.html(orig).prop('disabled', false), 1400);
+
+            // If cart page is open, reload it so items list updates immediately
+            if (document.querySelector('[data-cart-page]')) {
+              location.reload();
+            }
           }
         },
         error: function(xhr, errmsg, err){

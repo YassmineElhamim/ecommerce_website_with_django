@@ -675,3 +675,5 @@ def my_orders(request):
     return render(request, 'my_orders.html', context)
 
 
+def order_tracking(request):
+    return render(request,'order_tracking.html',{})

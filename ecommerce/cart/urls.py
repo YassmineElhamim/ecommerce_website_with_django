@@ -11,4 +11,5 @@ urlpatterns = [
     path('order/confirmation/<str:order_number>/', views.order_confirmation, name='order_confirmation'),
     path('order/track/<str:order_number>/', views.order_tracking, name='order_tracking'),
     path('orders/', views.my_orders, name='my_orders'),
+    path('order_tracking/', views.order_tracking, name='order_tracking'),
 ]

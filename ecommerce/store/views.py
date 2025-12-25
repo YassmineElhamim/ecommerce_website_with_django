@@ -36,6 +36,10 @@ def home(request):
 
 
 
+def favs(request):
+    return render(request, 'favs.html', {})
+
+
 def about(request):
     return render(request, 'about.html', {})
 
